@@ -38,11 +38,11 @@ app.get('/talker', async (_req, res) => {
 
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
-  const talker = await getManagerById(Number(id));
-  if (!talker) {
+  const talkerManager = await getManagerById(Number(id));
+  if (!talkerManager) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
-  return res.status(HTTP_OK_STATUS).json(talker);
+  return res.status(HTTP_OK_STATUS).json(talkerManager);
 });
 
 app.post('/login', validatePassword, validateEmail, (req, res) => {
@@ -79,4 +79,13 @@ app.put('/talker/:id',
   // const update = await updateManager(id, name, age, talk)
   // res.status(200).json(update);
   res.status(200).json(talkerManager[update]);
+  });
+
+  app.delete('/talker/:id', validateToken, async (req, res) => {
+    const { id } = req.params;
+    const talkerManager = await getAllManager();
+    const removeTalker = talkerManager.filter((talker) => talker.id !== Number(id));
+    const updateManager = JSON.stringify(removeTalker, null, 2);
+    await fs.writeFile(managerPath, updateManager);
+    res.status(204).end();
   });
