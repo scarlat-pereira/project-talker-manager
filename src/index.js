@@ -31,6 +31,22 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', validateToken, async (req, res) => {
+  const talkerManager = await getAllManager();
+  try {
+    const { q } = req.query;
+    if (q) {
+      const filteredManager = talkerManager.filter((e) => e.name.includes(q));
+      return res.status(200).json(filteredManager);
+    } if (!q) {
+    res.status(200).send(talkerManager);
+    }
+    res.status(200).end();
+  } catch (err) {
+    res.status(200).send('error');
+  }
+});
+
 app.get('/talker', async (_req, res) => {
   const talker = await getAllManager();
   return res.status(HTTP_OK_STATUS).json(talker);
