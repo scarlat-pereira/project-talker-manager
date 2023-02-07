@@ -1,3 +1,8 @@
+const fs = require('fs').promises;
+const path = require('path');
+
+const managerPath = path.resolve(__dirname, './talker.json');
+
 const express = require('express');
 const {
 validateToken,
@@ -46,8 +51,32 @@ app.post('/login', validatePassword, validateEmail, (req, res) => {
 });
 
 app.post('/talker',
-validateToken, validateName, validateAge, validateTalk, validateRate, async (req, res) => {
+validateToken,
+validateName,
+validateAge,
+validateTalk,
+validateRate, 
+async (req, res) => {
   const { name, age, talk } = req.body;
   const newTalkerManager = await createTalkerManager({ name, age, talk });
   res.status(201).send(newTalkerManager);
 });
+
+app.put('/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateRate, async (req, res) => {
+    const { id } = req.params;
+    const { name, age, talk } = req.body;
+    const { rate, watchedAt } = talk;
+    const talkerManager = await getAllManager();
+  const update = talkerManager.findIndex((e) => e.id === Number(id));
+  talkerManager[update] = { id: Number(id), name, age, talk, watchedAt, rate };
+  const updateManager = JSON.stringify(talkerManager, null, 2);
+  await fs.writeFile(managerPath, updateManager);
+  // const update = await updateManager(id, name, age, talk)
+  // res.status(200).json(update);
+  res.status(200).json(talkerManager[update]);
+  });
