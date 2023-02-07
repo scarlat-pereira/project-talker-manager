@@ -92,8 +92,6 @@ app.put('/talker/:id',
   talkerManager[update] = { id: Number(id), name, age, talk, watchedAt, rate };
   const updateManager = JSON.stringify(talkerManager, null, 2);
   await fs.writeFile(managerPath, updateManager);
-  // const update = await updateManager(id, name, age, talk)
-  // res.status(200).json(update);
   res.status(200).json(talkerManager[update]);
   });
 
