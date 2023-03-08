@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+require('dotenv');
 
 const managerPath = path.resolve(__dirname, './talker.json');
 
@@ -20,7 +21,8 @@ const app = express();
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
-const PORT = '3000';
+
+const { PORT } = process.env;
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
